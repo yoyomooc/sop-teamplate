@@ -1,0 +1,196 @@
+name: "buildx"
+
+on:
+  push:
+    paths:
+      - "src/**"
+
+env:
+  repository: ${{ github.repository }}
+  run_id: ${{ github.run_id }}
+  BOT: ${{ vars.BOT }}
+  GIT_DEPTH: ${{ vars.GIT_DEPTH }}
+  GIT_REPO: ${{ vars.GIT_REPO }}
+  GIT_REPO_PIPLINE: ${{ vars.GIT_REPO_PIPLINE }}
+  BASE_IMAGE_REGISTRY: ${{ vars.BASE_IMAGE_REGISTRY }}
+  IMAGE_REGISTRY: ${{ vars.IMAGE_REGISTRY }}
+  IMAGE_REGISTRY_USERNAME: ${{ vars.IMAGE_REGISTRY_USERNAME }}
+  IMAGE_REGISTRY_PASSWORD: ${{ secrets.IMAGE_REGISTRY_PASSWORD }}
+  IMAGE_ORG: ${{ vars.IMAGE_ORG }}
+  INSTALL_PRIVATE_CA: ${{ vars.INSTALL_PRIVATE_CA }}
+  DOTNET_NUGET_CONFIG: ${{ vars.DOTNET_NUGET_CONFIG }}
+  NPM_REGISTRY: ${{ vars.NPM_REGISTRY }}
+  NPM_NPMRC: ${{ vars.NPM_NPMRC }}
+
+jobs:
+  changes:
+    runs-on: ubuntu-22.04
+    outputs:
+      fengshenauth: ${{ steps.changes.outputs.fengshenauth }}
+      uniapp: ${{ steps.changes.outputs.uniapp }}
+      vue: ${{ steps.changes.outputs.vue }}
+      hostapi: ${{ steps.changes.outputs.hostapi }}
+      migrator: ${{ steps.changes.outputs.migrator }}
+      mode: ${{ steps.set-mode.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            fengshenauth:
+              - 'src/fengshenauth/**'
+            uniapp:
+              - 'src/uni-app/**'
+            vue:
+              - 'src/vue/**'
+            hostapi:
+              - 'src/hostapi/**'
+            migrator:
+              - 'src/migrator/**'
+      - name: Set Mode
+        id: set-mode
+        shell: pwsh
+        working-directory: ./build
+        run: ./set-mode.ps1
+
+  build-fengshenauth:
+    needs: changes
+    if: ${{ needs.changes.outputs.fengshenauth == 'true' || needs.changes.outputs.mode == 'tag' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.IMAGE_REGISTRY}}
+          username: ${{env.IMAGE_REGISTRY_USERNAME}}
+          password: ${{env.IMAGE_REGISTRY_PASSWORD}}
+      - name: build 1
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./clone-target-repo.ps1
+          ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "fengshenauth" `
+            -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.FengShenAuth/Dockerfile"
+
+  build-uniapp:
+    needs: changes
+    if: ${{ needs.changes.outputs.uniapp == 'true' || needs.changes.outputs.mode == 'tag' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.IMAGE_REGISTRY}}
+          username: ${{env.IMAGE_REGISTRY_USERNAME}}
+          password: ${{env.IMAGE_REGISTRY_PASSWORD}}
+      - name: build 1
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./clone-target-repo.ps1
+          ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "uni-app" `
+            -DockerfilePath "./src/uni-app/Dockerfile"
+
+  build-vue:
+    needs: changes
+    if: ${{ needs.changes.outputs.vue == 'true' || needs.changes.outputs.mode == 'tag' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.IMAGE_REGISTRY}}
+          username: ${{env.IMAGE_REGISTRY_USERNAME}}
+          password: ${{env.IMAGE_REGISTRY_PASSWORD}}
+      - name: build 1
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./clone-target-repo.ps1
+          ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "vue" `
+            -DockerfilePath "./src/vue/Dockerfile"
+
+  build-hostapi:
+    needs: changes
+    if: ${{ needs.changes.outputs.hostapi == 'true' || needs.changes.outputs.mode == 'tag' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.IMAGE_REGISTRY}}
+          username: ${{env.IMAGE_REGISTRY_USERNAME}}
+          password: ${{env.IMAGE_REGISTRY_PASSWORD}}
+      - name: build 1
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./clone-target-repo.ps1
+          ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "hostapi" `
+            -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Web.Host/Dockerfile"
+
+  build-migrator:
+    needs: changes
+    if: ${{ needs.changes.outputs.migrator == 'true' || needs.changes.outputs.mode == 'tag' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.IMAGE_REGISTRY}}
+          username: ${{env.IMAGE_REGISTRY_USERNAME}}
+          password: ${{env.IMAGE_REGISTRY_PASSWORD}}
+      - name: build 1
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./clone-target-repo.ps1
+          ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "migrator" `
+            -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Migrator/Dockerfile"
+
+  build-complete:
+    runs-on: ubuntu-22.04
+    if: |
+      always() &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
+    needs:
+      [
+        build-fengshenauth,
+        build-uniapp,
+        build-vue,
+        build-hostapi,
+        build-migrator,
+      ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: build 1
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./bot.ps1 -BotUrl $env:BOT -Msg 'Build Complete' -BuildSuccess $true
+
+  build-failure:
+    runs-on: ubuntu-22.04
+    if: ${{ failure() }}
+    needs:
+      [
+        build-fengshenauth,
+        build-uniapp,
+        build-vue,
+        build-hostapi,
+        build-migrator,
+      ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: build 1
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./bot.ps1 -BotUrl $env:BOT -Msg 'Build Failure' -BuildSuccess $false
