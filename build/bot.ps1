@@ -58,6 +58,7 @@ Write-Host "$成功的镜像名称："+$BuildImageName
 
 # 根据编译结果生成通知消息
 if ($BuildSuccess) {
+pwsh ./trigger_syncimage.ps1
     $title = "sop-teamplate-CI编译成功通知"
     $message = "sop-teamplate-CI编译成功！✨ 镜像：$BuildImageName 构建成功！"
     $emoji = "🚀"
