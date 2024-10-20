@@ -10,14 +10,8 @@ $currentDateStr = $currentDate.ToString('yyyy-MM-dd HH:mm:ss')
 
 Write-Host "$currentDate"+$currentDate
 
-# 获取当前时间
-$creationTime = [DateTime]::Parse($ciConfig.creationTime).ToUniversalTime().AddHours(8)
-Write-Host "$creationTime"+$creationTime
 
 
-
-# 计算构建时长
-$buildDuration = $currentDate - $creationTime
 $rootPath = Split-Path -Parent (Get-Location).Path
 
 
@@ -39,6 +33,20 @@ $gitlabPipelineId = $ciConfig.gitlabPipelineId
 
 $workflowUrl = "https://github.com/${env:repository}/actions/runs/${env:run_id}"
 $pipelineUrl = "${env:GIT_REPO_PIPLINE}/${gitlabPipelineId}"
+
+
+
+
+# 获取当前时间
+$creationTime = [DateTime]::ParseExact($ciConfig.creationTime, "yyyy-MM-dd HH:mm:ss", $null).ToUniversalTime().AddHours(8)
+
+
+Write-Host "$creationTime"+$creationTime
+
+
+# 计算构建时长
+$buildDuration = $currentDate - $creationTime
+
 
 #$BuildImageName
 
