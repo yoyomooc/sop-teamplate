@@ -35,7 +35,9 @@ $pipelineUrl = "${env:GIT_REPO_PIPLINE}/${gitlabPipelineId}"
 
 Write-Host "$成功的镜像名称："+$BuildImageName
 
+# 获取当前时间
 
+$creationTime = [DateTime]::Parse($ciConfig.creationTime)
 
 # 计算构建时长
 $buildDuration = $currentDate - $creationTime
