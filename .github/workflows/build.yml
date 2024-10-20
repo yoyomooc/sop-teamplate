@@ -8,6 +8,7 @@ on:
 env:
   repository: ${{ github.repository }}
   run_id: ${{ github.run_id }}
+  GITLAB_RUNNER_TOKEN: ${{ secrets.GITLAB_RUNNER_TOKEN }}
   BOT: ${{ vars.BOT }}
   GIT_DEPTH: ${{ vars.GIT_DEPTH }}
   GIT_REPO: ${{ secrets.GIT_REPO }}
