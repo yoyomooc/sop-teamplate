@@ -53,41 +53,10 @@ $buildDuration = $currentDate - $creationTime
 
 Write-Host "$成功的镜像名称："+$BuildImageName
 
-curl -X POST "https://code.52abp.com/api/v4/projects/337/trigger/pipeline" \
-     -F token=$GITLAB_RUNNER_TOKEN \
-     -F ref="sync-images" \
-     -F variables[CI_JOB_MODE]=$ciJobMode \
-     -F variables[Version]=$branchOrTagKey
-
-
 
 # 根据编译结果生成通知消息
 if ($BuildSuccess) {
-
-$uri = "https://code.52abp.com/api/v4/projects/337/trigger/pipeline"
-$ref = "sync-images"
-
-# 定义要传递的变量
-$ciJobMode = $ciConfig.mode  # 替换为实际的作业模式
-$branchOrTagKey = "main"     # 替换为实际的版本号
-
-
-
-$response = Invoke-RestMethod -Uri "https://code.52abp.com/api/v4/projects/337/trigger/pipeline" -Method Post -Form @{
-    token = $GITLAB_RUNNER_TOKEN
-    ref = "sync-images"
-    "variables[CI_JOB_MODE]" = $ciJobMode
-    "variables[Version]" = $branchOrTagKey
-}
-
-if ($response -eq $null) {
-    Write-Error "Pipeline trigger failed."
-} else {
-    Write-Output "Pipeline triggered successfully."
-}
-
-
-    $title = "sop-teamplate-CI编译成功通知 $ref $uri $ciJobMode $version"
+    $title = "sop-teamplate-CI编译成功通知"
     $message = "sop-teamplate-CI编译成功！✨ 镜像：$BuildImageName 构建成功！"
     $emoji = "🚀"
 } else {
