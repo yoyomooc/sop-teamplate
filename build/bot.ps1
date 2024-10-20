@@ -36,6 +36,11 @@ $pipelineUrl = "${env:GIT_REPO_PIPLINE}/${gitlabPipelineId}"
 # 计算构建时长
 $buildDuration = $currentDate - $run_started_at
 
+
+Write-Host "$成功的镜像名称："+$BuildImageName
+
+
+
 # 根据编译结果生成通知消息
 if ($BuildSuccess) {
     $title = "sop-teamplate-CI编译成功通知"
