@@ -24,7 +24,7 @@ if ($ciConfig.mode -eq 'tag') {
 $branchOrTag = $ciConfig.branch
 $commit = $ciConfig.commit
 
-Write-Host "$run_started_at"+$run_started_at
+Write-Host "$creationTime"+$creationTime
 
 $gitlabPipelineId = $ciConfig.gitlabPipelineId
 
@@ -33,11 +33,13 @@ $pipelineUrl = "${env:GIT_REPO_PIPLINE}/${gitlabPipelineId}"
 
 #$BuildImageName
 
-# 计算构建时长
-$buildDuration = $currentDate - $run_started_at
-
-
 Write-Host "$成功的镜像名称："+$BuildImageName
+
+
+
+# 计算构建时长
+$buildDuration = $currentDate - $creationTime
+
 
 
 

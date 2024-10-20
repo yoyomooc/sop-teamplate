@@ -12,3 +12,13 @@ $ciConfig = (Get-Content -Path $ciConfigPath -Encoding UTF8) | ConvertFrom-Json
 
 # 将 mode 的值输出到 GitHub Actions 的上下文中
 echo "mode=$($ciConfig.mode)" >> $env:GITHUB_OUTPUT
+
+# 获取当前时间
+
+$creationTime = [DateTime]::Parse($ciConfig.creationTime)
+
+
+
+
+
+

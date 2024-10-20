@@ -25,6 +25,8 @@ Write-Host "标签的值🏷: ${env:TAG}"
 
 Write-Host "Mode: ${env:Mode}"
 
+Write-Host "Mode: ${env:Mode}"
+
 
 # 克隆目标仓库代码
 ## git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
