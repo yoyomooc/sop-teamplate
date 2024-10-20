@@ -71,7 +71,7 @@ jobs:
         working-directory: ./build
         run: |
           ./clone-target-repo.ps1
-          ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "fengshenauth" `
+          ./build.ps1 -ImageName "sop-teamplate" -ProjectType "dotnet" -ProjectName "fengshenauth" `
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.FengShenAuth/Dockerfile"
 
   build-uniapp:
@@ -91,7 +91,7 @@ jobs:
         working-directory: ./build
         run: |
           ./clone-target-repo.ps1
-          ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "uni-app" `
+          ./build.ps1 -ImageName "sop-teamplate" -ProjectType "vue" -ProjectName "uni-app" `
             -DockerfilePath "./src/uni-app/Dockerfile"
 
   build-vue:
@@ -111,7 +111,7 @@ jobs:
         working-directory: ./build
         run: |
           ./clone-target-repo.ps1
-          ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "vue" `
+          ./build.ps1 -ImageName "sop-teamplate" -ProjectType "vue" -ProjectName "vue" `
             -DockerfilePath "./src/vue/Dockerfile"
 
   build-hostapi:
@@ -131,7 +131,7 @@ jobs:
         working-directory: ./build
         run: |
           ./clone-target-repo.ps1
-          ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "hostapi" `
+          ./build.ps1 -ImageName "sop-teamplate" -ProjectType "dotnet" -ProjectName "hostapi" `
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Web.Host/Dockerfile"
 
   build-migrator:
@@ -151,7 +151,7 @@ jobs:
         working-directory: ./build
         run: |
           ./clone-target-repo.ps1
-          ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "migrator" `
+          ./build.ps1 -ImageName "sop-teamplate" -ProjectType "dotnet" -ProjectName "migrator" `
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Migrator/Dockerfile"
 
   build-complete:
