@@ -10,8 +10,18 @@ $currentDateStr = $currentDate.ToString('yyyy-MM-dd HH:mm:ss')
 
 Write-Host "$currentDate"+$currentDate
 
+# 获取当前时间
+$creationTime = [DateTime]::Parse($ciConfig.creationTime).ToUniversalTime().AddHours(8)
+Write-Host "$creationTime"+$creationTime
 
+
+
+# 计算构建时长
+$buildDuration = $currentDate - $creationTime
 $rootPath = Split-Path -Parent (Get-Location).Path
+
+
+
 
 # 读取当前项目配置 -- ci-config.json
 $ciConfigPath = Join-Path $rootPath "src" "ci-config.json"
@@ -24,7 +34,6 @@ if ($ciConfig.mode -eq 'tag') {
 $branchOrTag = $ciConfig.branch
 $commit = $ciConfig.commit
 
-Write-Host "$creationTime"+$creationTime
 
 $gitlabPipelineId = $ciConfig.gitlabPipelineId
 
@@ -34,13 +43,6 @@ $pipelineUrl = "${env:GIT_REPO_PIPLINE}/${gitlabPipelineId}"
 #$BuildImageName
 
 Write-Host "$成功的镜像名称："+$BuildImageName
-
-# 获取当前时间
-
-$creationTime = [DateTime]::Parse($ciConfig.creationTime)
-
-# 计算构建时长
-$buildDuration = $currentDate - $creationTime
 
 
 
