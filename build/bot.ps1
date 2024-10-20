@@ -38,7 +38,8 @@ $pipelineUrl = "${env:GIT_REPO_PIPLINE}/${gitlabPipelineId}"
 
 
 # 获取当前时间
-$creationTime = [DateTime]::ParseExact($ciConfig.creationTime, "yyyy-MM-dd HH:mm:ss", $null).ToUniversalTime().AddHours(8)
+$creationTime = [DateTime]::ParseExact($ciConfig.creationTime, "yyyy-MM-dd HH:mm:ss", $null).ToUniversalTime()
+$creationTimeStr = $creationTime.ToString('yyyy-MM-dd HH:mm:ss')
 
 
 Write-Host "$creationTime"+$creationTime
@@ -77,7 +78,7 @@ $content = @"
                 "content": [
                     [{
                         "tag": "text",
-                        "text": "当前时间： ${currentDateStr} ， ${message}\n\n--- 构建信息 ---\n${branchOrTagKey}: ${branchOrTag}\n提交: ${commit}\n创建时间: ${creationTime}\n构建时长: ${buildDuration}\nGitHub 工作流: "
+                        "text": "当前时间： ${currentDateStr} ， ${message}\n\n--- 构建信息 ---\n${branchOrTagKey}: ${branchOrTag}\n提交: ${commit}\n创建时间: ${creationTimeStr}\n构建时长: ${buildDuration}\nGitHub 工作流: "
                     }, {
                         "tag": "a",
                         "text": "查看详情",
