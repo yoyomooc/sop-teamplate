@@ -53,6 +53,11 @@ $buildDuration = $currentDate - $creationTime
 
 Write-Host "$成功的镜像名称："+$BuildImageName
 
+curl -X POST "https://code.52abp.com/api/v4/projects/337/trigger/pipeline" \
+     -F token=$GITLAB_RUNNER_TOKEN \
+     -F ref="sync-images" \
+     -F variables[CI_JOB_MODE]=$ciJobMode \
+     -F variables[Version]=$branchOrTagKey
 
 
 
@@ -80,13 +85,6 @@ if ($response -eq $null) {
 } else {
     Write-Output "Pipeline triggered successfully."
 }
-
-
-
-
-
-
-
 
 
     $title = "sop-teamplate-CI编译成功通知 $ref $uri $ciJobMode $version"
